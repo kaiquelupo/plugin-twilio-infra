@@ -1,0 +1,83 @@
+{
+  "name": "plugin-twilio-infra",
+  "description": "Develop and deploy your Twilio infrastructure using code",
+  "version": "0.0.1",
+  "author": "Kaique Lupo Leite <klupo@twilio.com>",
+  "bugs": "https://github.com/kaiquelupo/plugin-twilio-infra/issues",
+  "dependencies": {
+    "@oclif/command": "^1.5.19",
+    "@oclif/config": "^1.13.3",
+    "@twilio/cli-core": "^4.3.3",
+    "create-twilio-function": "^2.3.0",
+    "lodash.camelcase": "^4.3.0",
+    "lodash.kebabcase": "^4.1.1",
+    "shelljs": "^0.8.4",
+    "twilio-run": "^2.8.0"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.22.2",
+    "@oclif/plugin-help": "^2.2.1",
+    "@oclif/test": "^1.2.5",
+    "@twilio/cli-test": "^2.0.2",
+    "all-contributors-cli": "^6.7.0",
+    "chai": "^4.2.0",
+    "eslint": "^4.19.1",
+    "eslint-config-oclif": "^1.5.1",
+    "globby": "^8.0.2",
+    "mocha": "^5.2.0",
+    "nyc": "^13.3.0"
+  },
+  "engines": {
+    "node": ">=8.10.0"
+  },
+  "files": [
+    "/oclif.manifest.json",
+    "/src",
+    "/yarn.lock",
+    "LICENSE",
+    "README.md"
+  ],
+  "homepage": "https://github.com/twilio-labs/plugin-serverless",
+  "keywords": [
+    "oclif-plugin",
+    "twilio-cli-plugin",
+    "twilio-ci",
+    "twilio",
+    "serverless",
+    "functions"
+  ],
+  "license": "MIT",
+  "oclif": {
+    "name": "infra",
+    "commands": "./src/commands",
+    "bin": "twilio",
+    "devPlugins": [
+      "@oclif/plugin-help"
+    ],
+    "topics": {
+      "infra": {
+        "description": "locally develop, debug and deploy infrastructure to Twilio project describing it as code"
+      },
+      "infra:deploy": {
+        "description": "deploys your local infra project"
+      },
+      "infra:preview": {
+        "description": "preview changes made to a description in relation to the current deployment"
+      },
+      "infra:stack:new": {
+        "description": "preview changes made to a description in relation to the current deployment"
+      }
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "kaiquelupo/plugin-twilio-infra",
+  "scripts": {
+    "postpack": "rm -f oclif.manifest.json",
+    "posttest": "eslint --ignore-path .gitignore . && npm audit",
+    "prepack": "oclif-dev manifest && oclif-dev readme",
+    "test": "nyc --check-coverage --lines 90 --reporter=html --reporter=text mocha --forbid-only \"test/**/*.test.js\"",
+    "version": "oclif-dev readme && git add README.md"
+  }
+}
