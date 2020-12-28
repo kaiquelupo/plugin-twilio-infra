@@ -66,3 +66,7 @@ Please be aware that this project has a [Code of Conduct](https://github.com/twi
 ## License
 
 MIT
+
+### Twilio CLI Serverless Plugin
+
+This plugin uses as base the [Twilio CLI Serverless Plugin](https://github.com/twilio-labs/plugin-serverless) repository. A big thank you for everyone involved in this project! **#WeBuild**
