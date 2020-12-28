@@ -1,47 +1,30 @@
 const { TwilioClientCommand } = require("@twilio/cli-core").baseCommands;
 
 const {
-  cliInfo
-} = require('create-twilio-function/src/command');
 
-const {
-  
   convertYargsOptionsToOclifFlags,
-  normalizeFlags,
-  getEnvironmentVariables
+  runPulumiCommand,
+  options
 
 } = require('../../utils');
-
-const shell = require("shelljs");
 
 class FunctionsPreview extends TwilioClientCommand {
   async run() {
     await super.run();
 
-    let { flags, args } = this.parse(FunctionsPreview);
-    flags = normalizeFlags(flags);
-
-    const vars = getEnvironmentVariables(flags, this.twilioClient);
-
-    shell.exec(`${vars} eval 'pulumi preview ${args.stack}'`).stdout;
+    runPulumiCommand(this.parse(FunctionsPreview), this.twilioClient, "pulumi preview");
 
     return;
   }
 }
 
-FunctionsPreview.description = "previews your local infra project";
+FunctionsPreview.description = "Previews changes related to resources described in this directory and mapped to a Twilio project";
 
-FunctionsPreview.args = [
-  {
-    name: 'stack',
-    required: true,
-    description: 'Stack name to preview changes of this project',
-  },
-];
+FunctionsPreview.args = [];
 
 FunctionsPreview.flags = Object.assign(
   {},
-  convertYargsOptionsToOclifFlags(cliInfo.options),
+  convertYargsOptionsToOclifFlags(options),
   { profile: TwilioClientCommand.flags.profile }
 );
 

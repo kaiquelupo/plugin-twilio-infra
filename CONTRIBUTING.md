@@ -1,4 +1,4 @@
-# Contributing to @twilio-labs/plugin-serverless
+# Contributing to plugin-twilio-infra
 
 ## About the Project
 
@@ -6,22 +6,17 @@ This plugin is a wrapper around other existing tools. When planning to submit a
 fix please consider submitting the fix to the respective project. When in doubt,
 create an issue and we are happy to point you into the right direction.
 
-- [`plugin-serverless`](https://github.com/twilio-labs/plugin-serverless) - Wrapper code needed to interact between the [`twilio-run` CLI](https://github.com/twilio-labs/twilio-run) and the [Twilio CLI](https://github.com/twilio/twilio-cli)
-- [`twilio-run`](https://github.com/twilio-labs/twilio-run) - The actual CLI code and the code necessary to do local development
-- [`serverless-api`](https://github.com/twilio-labs/serverless-api) - Module used to interact with the Twilio Serverless API (handles the actual deployment)
-- [`create-twilio-function`](https://github.com/philnash/create-twilio-function) - Code run when `twilio serverless:init` is called
+- [`twilio-pulumi-provider`](https://github.com/kaiquelupo/twilio-pulumi-provider) - Dynamic Provider to describe Twilio Infrastrucure using Pulumi
+- [`pulumi-sdk`](https://github.com/pulumi/pulumi) - Pulumi's Infrastructure as Code SDK project.
 
-## Requirements
-
-Make sure you have Node.js 10.17 or newer installed
 
 ## Setup
 
 1. Clone project and install dependencies\_
 
 ```bash
-git clone https://github.com/twilio-labs/plugin-serverless.git
-cd plugin-serverless
+git clone https://github.com/kaiquelupo/plugin-twilio-infra
+cd plugin-twilio-infra
 npm install
 ```
 
@@ -35,7 +30,7 @@ twilio plugins:link <path_to_your_project>
 ## Contributing
 
 1. Perform changes
-2. Test changes manually using `twilio serverless`
+2. Test changes manually using `twilio infra`
 3. Make sure tests pass by running `npm test`
 4. Submit a PR
 

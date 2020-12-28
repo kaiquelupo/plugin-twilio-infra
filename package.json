@@ -8,11 +8,10 @@
     "@oclif/command": "^1.5.19",
     "@oclif/config": "^1.13.3",
     "@twilio/cli-core": "^4.3.3",
-    "create-twilio-function": "^2.3.0",
     "lodash.camelcase": "^4.3.0",
     "lodash.kebabcase": "^4.1.1",
     "shelljs": "^0.8.4",
-    "twilio-run": "^2.8.0"
+    "valid-url": "^1.0.9"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.2",
@@ -42,9 +41,7 @@
     "oclif-plugin",
     "twilio-cli-plugin",
     "twilio-ci",
-    "twilio",
-    "serverless",
-    "functions"
+    "twilio"
   ],
   "license": "MIT",
   "oclif": {
@@ -56,16 +53,19 @@
     ],
     "topics": {
       "infra": {
-        "description": "locally develop, debug and deploy infrastructure to Twilio project describing it as code"
+        "description": "Locally develop, debug and deploy infrastructure to Twilio project describing it as code"
       },
       "infra:deploy": {
-        "description": "deploys your local infra project"
+        "description": "Deploys and updates resources described in this directory to a Twilio project"
       },
       "infra:preview": {
-        "description": "preview changes made to a description in relation to the current deployment"
+        "description": "Previews changes related to resources described in this directory and mapped to a Twilio project"
       },
-      "infra:stack:new": {
-        "description": "preview changes made to a description in relation to the current deployment"
+      "infra:watch": {
+        "description": "Continuously update resources described in this directory in a Twilio project"
+      },
+      "infra:new": {
+        "description": "Creates a new project based on a template"
       }
     }
   },
