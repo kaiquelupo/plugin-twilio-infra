@@ -21,9 +21,12 @@ class InfraNew extends TwilioClientCommand {
         args.template :
         `https://github.com/pulumi/templates/tree/master/${args.template ? args.template : "javascript"}` 
     
+    let pulumiArgs = ['new', repo]
     const stackName = getStackName(flags, this.twilioClient);
-
-    child_process.execFileSync('pulumi', ["new", repo, `--stack=${stackName}`], { stdio: 'inherit' });
+    if (stackName) {
+      pulumiArgs.push(`--stack=${stackName}`);
+    }
+    child_process.execFileSync("pulumi", pulumiArgs, { stdio: "inherit" })
 
     return;
   }
