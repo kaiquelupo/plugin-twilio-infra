@@ -19,7 +19,7 @@ class InfraNew extends TwilioClientCommand {
     const repo = 
       validUrl.isUri(args.template) ? 
         args.template :
-        `https://github.com/pulumi/templates/tree/master/${args.template ? args.template : "kubernetes-javascript"}` 
+        `https://github.com/pulumi/templates/tree/master/${args.template ? args.template : "javascript"}` 
     
     const stackName = getStackName(flags, this.twilioClient);
 
