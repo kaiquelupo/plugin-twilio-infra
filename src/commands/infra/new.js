@@ -28,6 +28,9 @@ class InfraNew extends TwilioClientCommand {
     }
     child_process.execFileSync("pulumi", pulumiArgs, { stdio: "inherit" })
 
+    // Install twilio-pulumi-provider 
+    child_process.execFileSync("npm", ["install", "twilio", "twilio-pulumi-provider"], { stdio: "inherit" })
+
     return;
   }
 }
