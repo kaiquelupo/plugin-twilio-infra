@@ -19,11 +19,17 @@ class InfraNew extends TwilioClientCommand {
     const repo = 
       validUrl.isUri(args.template) ? 
         args.template :
-        `https://github.com/pulumi/templates/tree/master/${args.template ? args.template : "kubernetes-javascript"}` 
+        `https://github.com/pulumi/templates/tree/master/${args.template ? args.template : "javascript"}` 
     
+    let pulumiArgs = ['new', repo]
     const stackName = getStackName(flags, this.twilioClient);
+    if (stackName) {
+      pulumiArgs.push(`--stack=${stackName}`);
+    }
+    child_process.execFileSync("pulumi", pulumiArgs, { stdio: "inherit" })
 
-    child_process.execFileSync('pulumi', ["new", repo, `--stack=${stackName}`], { stdio: 'inherit' });
+    // Install twilio-pulumi-provider 
+    child_process.execFileSync("npm", ["install", "twilio", "twilio-pulumi-provider"], { stdio: "inherit" })
 
     return;
   }

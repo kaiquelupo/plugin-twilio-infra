@@ -1,14 +1,11 @@
 const { TwilioClientCommand } = require("@twilio/cli-core").baseCommands;
 
 const {
-  cliInfo
-} = require('create-twilio-function/src/command');
-
-const {
   
   convertYargsOptionsToOclifFlags,
   normalizeFlags,
-  getEnvironmentVariables
+  getEnvironmentVariables,
+  options
 
 } = require('../../../utils');
 
