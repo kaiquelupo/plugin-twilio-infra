@@ -39,7 +39,7 @@ $ brew tap twilio/brew && brew install twilio
 ## Usage
 
 ```sh-session
-$ twilio plugins:install plugin-twilio-infra
+$ twilio plugins:install kaiquelupo/plugin-twilio-infra
 $ twilio --help infra
 USAGE
   $ twilio infra
