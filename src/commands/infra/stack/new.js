@@ -39,7 +39,7 @@ FunctionsStackNew.args = [
 
 FunctionsStackNew.flags = Object.assign(
   {},
-  convertYargsOptionsToOclifFlags(cliInfo.options),
+  convertYargsOptionsToOclifFlags(options),
   { profile: TwilioClientCommand.flags.profile }
 );
 
