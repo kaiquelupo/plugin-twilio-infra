@@ -1,8 +1,16 @@
 const path = require("path");
 const camelCase = require("lodash.camelcase");
 const { flags } = require("@oclif/command");
-const fs = require('fs');
+const { TwilioCliError } = require("@twilio/cli-core").services.error;
+const fs = require("fs");
+
+//TODO: remove dependencies from shelljs
 const shell = require("shelljs");
+
+const util = require("util");
+const exec = util.promisify(require("child_process").exec);
+
+var inquirer = require("inquirer");
 
 function convertYargsOptionsToOclifFlags(options) {
   const flagsResult = Object.keys(options).reduce((result, name) => {
@@ -131,19 +139,56 @@ function setStack(flags, args, clientCommand) {
 
   return stackName
 
+async function checkPulumi() {
+  try {
+    const { stdout, stderr } = await exec("pulumi login");
+    if (stderr) {
+      throw new TwilioCliError(stderr);
+    }
+    if (stdout.includes("(file://~)")) {
+      return { local: true };
+    }
+  } catch (err) {
+    throw new TwilioCliError(
+      "Error running Pulumi CLI.\nMake sure the Pulumi CLI is installed\n" + err
+    );
+  }
 }
 
-function runPulumiCommand(parseInputs, twilioClient, command, commandFlags) {
-
+async function runPulumiCommand(
+  parseInputs,
+  twilioClient,
+  command,
+  commandFlags
+) {
   let { flags, args } = parseInputs;
 
   flags = normalizeFlags(flags);
 
   const stackName = setStack(flags, args, twilioClient);
-  const vars = getEnvironmentVariables(flags, twilioClient, stackName);
+  let vars = getEnvironmentVariables(flags, twilioClient, stackName);
 
-  shell.exec(`${vars} ${command} --stack=${stackName} ${commandFlags || ""}`).stdout;
+  const pulumiCLI = await checkPulumi();
+  if (pulumiCLI.local) {
+    const answers = await inquirer.prompt([
+      {
+        type: "password",
+        name: "passPhrase",
+        message: "Enter your passphrase to unlock config/secrets",
+      },
+    ]);
+    // Add passphrase to env variable
+    vars += ` PULUMI_CONFIG_PASSPHRASE=${answers.passPhrase}`;
+  }
 
+  try {
+    const { stdout, stderr } = await exec(
+      `${vars} ${command} --stack=${stackName} ${commandFlags || ""}`
+    );
+    console.log(stdout);
+  } catch (err) {
+    throw new TwilioCliError("Error running Pulumi CLI command.\n" + err);
+  }
 }
 
 const options = { 
