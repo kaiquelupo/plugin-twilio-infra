@@ -36,7 +36,7 @@
     "LICENSE",
     "README.md"
   ],
-  "homepage": "https://github.com/twilio-labs/plugin-serverless",
+  "homepage": "https://github.com/kaiquelupo/plugin-twilio-infra",
   "keywords": [
     "oclif-plugin",
     "twilio-cli-plugin",

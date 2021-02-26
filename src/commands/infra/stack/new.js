@@ -27,7 +27,7 @@ class FunctionsStackNew extends TwilioClientCommand {
   }
 }
 
-FunctionsStackNew.description = "previews your local infra project";
+FunctionsStackNew.description = "Create a new Pulumi stack in your project";
 
 FunctionsStackNew.args = [
   {
@@ -39,7 +39,7 @@ FunctionsStackNew.args = [
 
 FunctionsStackNew.flags = Object.assign(
   {},
-  convertYargsOptionsToOclifFlags(cliInfo.options),
+  convertYargsOptionsToOclifFlags(options),
   { profile: TwilioClientCommand.flags.profile }
 );
 
