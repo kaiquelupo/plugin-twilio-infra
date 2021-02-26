@@ -41,7 +41,7 @@ $ brew tap twilio/brew && brew install twilio
 To get started, run `npm install` to install the plugin package dependencies. Afterwards, run the following command:
 
 ```sh-session
-$ twilio plugins:install kaiquelupo/plugin-twilio-infra
+$ twilio plugins:install twilio-infra-as-code/plugin-twilio-infra
 ```
 
 You can now start using the `twilio infra` commands on your machine.
@@ -74,10 +74,10 @@ This project welcomes contributions from the community. Please see the [`CONTRIB
 
 Please be aware that this project has a [Code of Conduct](https://github.com/twilio-labs/.github/blob/master/CODE_OF_CONDUCT.md). The tldr; is to just be excellent to each other ❤️
 
+## Acknowledgment and thanks
+
+This plugin is based on the [Twilio CLI Serverless Plugin](https://github.com/twilio-labs/plugin-serverless) repository. A big thank you to everyone involved in that project! **#WeBuild**
+
 ## License
 
 MIT
-
-### Twilio CLI Serverless Plugin
-
-This plugin uses the [Twilio CLI Serverless Plugin](https://github.com/twilio-labs/plugin-serverless) as its base repository. A big thank you to everyone involved in this project! **#WeBuild**
