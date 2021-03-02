@@ -138,6 +138,7 @@ function setStack(flags, args, clientCommand) {
   }
 
   return stackName
+}
 
 async function checkPulumi() {
   try {
