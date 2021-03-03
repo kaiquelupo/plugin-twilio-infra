@@ -209,12 +209,12 @@ async function runPulumiCommand(
       const answers = await inquirer.prompt([
         {
           type: "password",
-          name: "passPhrase",
+          name: "passphrase",
           message: "Enter your passphrase to unlock config/secrets",
         },
       ]);
       // Add passphrase to env variable
-      vars += ` PULUMI_CONFIG_PASSPHRASE=${answers.passPhrase}`;
+      vars += ` PULUMI_CONFIG_PASSPHRASE=${answers.passphrase}`;
     }
     const { stdout, stderr } = await exec(
       `${vars} ${command} --stack=${stackName} ${commandFlags || ""}`
