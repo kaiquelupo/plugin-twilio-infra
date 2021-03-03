@@ -170,7 +170,13 @@ async function runPulumiCommand(
   let vars = getEnvironmentVariables(flags, twilioClient, stackName);
 
   const pulumiCLI = await checkPulumi();
-  if (pulumiCLI.local) {
+  if (
+    pulumiCLI.local &&
+    !(
+      process.env.PULUMI_CONFIG_PASSPHRASE ||
+      process.env.PULUMI_CONFIG_PASSPHRASE_FILE
+    )
+  ) {
     const answers = await inquirer.prompt([
       {
         type: "password",
