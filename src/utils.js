@@ -12,6 +12,10 @@ const exec = util.promisify(require("child_process").exec);
 
 var inquirer = require("inquirer");
 
+function logger(message) {
+  console.log(message);
+}
+
 function convertYargsOptionsToOclifFlags(options) {
   const flagsResult = Object.keys(options).reduce((result, name) => {
     const opt = options[name];
