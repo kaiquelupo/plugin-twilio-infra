@@ -144,18 +144,34 @@ function setStack(flags, args, clientCommand) {
   return stackName
 }
 
+/**
+ * Generic function to check pulumi CLI status (e.g. check CLI installed, which backend is used, etc)
+ * It uses the output of `pulumi login` to check
+ *
+ * @return {installed: boolean, local: boolean, error: string} Return an object with infromation about the Pulumi CLI
+ */
+
 async function checkPulumi() {
+  let tmpResult = {
+    installed: false,
+    local: false,
+    error: "",
+  };
   try {
     const { stdout, stderr } = await exec("pulumi login");
     if (stderr) {
-      throw new TwilioCliError(stderr);
+      tmpResult.error = stderr;
     }
     if (stdout.includes("(file://~)")) {
-      return { local: true };
+      tmpResult.local = true;
     }
+    return tmpResult;
   } catch (err) {
     throw new TwilioCliError(
-      "Error running Pulumi CLI.\nMake sure the Pulumi CLI is installed\n" + err
+      "\n\nCheck Pulumi CLI failed.\n" +
+        "Try running `pulumi login` to make sure the pulumi CLI is installed.\n" +
+        "** Error message: \n ** " +
+        err.message
     );
   }
 }
