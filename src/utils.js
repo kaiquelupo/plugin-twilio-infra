@@ -176,6 +176,14 @@ async function checkPulumi() {
   }
 }
 
+/**
+ * Run Pulumi CLI command 
+ * 
+ * @param {*} parseInputs 
+ * @param {*} twilioClient 
+ * @param {*} command 
+ * @param {*} commandFlags 
+ */
 async function runPulumiCommand(
   parseInputs,
   twilioClient,
@@ -189,32 +197,31 @@ async function runPulumiCommand(
   const stackName = setStack(flags, args, twilioClient);
   let vars = getEnvironmentVariables(flags, twilioClient, stackName);
 
-  const pulumiCLI = await checkPulumi();
-  if (
-    pulumiCLI.local &&
-    !(
-      process.env.PULUMI_CONFIG_PASSPHRASE ||
-      process.env.PULUMI_CONFIG_PASSPHRASE_FILE
-    )
-  ) {
-    const answers = await inquirer.prompt([
-      {
-        type: "password",
-        name: "passPhrase",
-        message: "Enter your passphrase to unlock config/secrets",
-      },
-    ]);
-    // Add passphrase to env variable
-    vars += ` PULUMI_CONFIG_PASSPHRASE=${answers.passPhrase}`;
-  }
-
   try {
+    const pulumiCLI = await checkPulumi();
+    if (
+      pulumiCLI.local &&
+      !(
+        process.env.PULUMI_CONFIG_PASSPHRASE ||
+        process.env.PULUMI_CONFIG_PASSPHRASE_FILE
+      )
+    ) {
+      const answers = await inquirer.prompt([
+        {
+          type: "password",
+          name: "passPhrase",
+          message: "Enter your passphrase to unlock config/secrets",
+        },
+      ]);
+      // Add passphrase to env variable
+      vars += ` PULUMI_CONFIG_PASSPHRASE=${answers.passPhrase}`;
+    }
     const { stdout, stderr } = await exec(
       `${vars} ${command} --stack=${stackName} ${commandFlags || ""}`
     );
-    console.log(stdout);
+    logger(stdout);
   } catch (err) {
-    throw new TwilioCliError("Error running Pulumi CLI command.\n" + err);
+    throw new TwilioCliError("\n\nError running Pulumi CLI command.\n ** " + err.message);
   }
 }
 
