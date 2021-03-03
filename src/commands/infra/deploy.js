@@ -14,7 +14,7 @@ class FunctionsDeploy extends TwilioClientCommand {
 
     await super.run();
     
-    runPulumiCommand(this.parse(FunctionsDeploy), this.twilioClient, "pulumi up", "--yes");
+    await runPulumiCommand(this.parse(FunctionsDeploy), this.twilioClient, "pulumi up", "--yes");
 
     return;
 

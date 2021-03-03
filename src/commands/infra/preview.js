@@ -12,7 +12,7 @@ class FunctionsPreview extends TwilioClientCommand {
   async run() {
     await super.run();
 
-    runPulumiCommand(this.parse(FunctionsPreview), this.twilioClient, "pulumi preview");
+    await runPulumiCommand(this.parse(FunctionsPreview), this.twilioClient, "pulumi preview");
 
     return;
   }
