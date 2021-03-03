@@ -14,6 +14,14 @@ class FunctionsDeploy extends TwilioClientCommand {
 
     await super.run();
     
+    let { flags } = this.parse(FunctionsDeploy);
+    if (!flags.stack) {
+      console.error(
+        "Please provide the name of the Pulumi stack\n e.g. twilio infra:deploy --stack dev\n"
+      );
+      return;
+    }
+
     await runPulumiCommand(this.parse(FunctionsDeploy), this.twilioClient, "pulumi up", "--yes");
 
     return;
