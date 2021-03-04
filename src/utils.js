@@ -1,16 +1,15 @@
-const path = require("path");
-const camelCase = require("lodash.camelcase");
-const { flags } = require("@oclif/command");
-const { TwilioCliError } = require("@twilio/cli-core").services.error;
-const fs = require("fs");
+const path = require('path');
+const camelCase = require('lodash.camelcase');
+const { flags } = require('@oclif/command');
+const { TwilioCliError } = require('@twilio/cli-core').services.error;
+const fs = require('fs');
+const inquirer = require('inquirer');
 
-//TODO: remove dependencies from shelljs
-const shell = require("shelljs");
+// TODO: remove dependencies from shelljs
+const shell = require('shelljs');
 
-const util = require("util");
-const exec = util.promisify(require("child_process").exec);
-
-var inquirer = require("inquirer");
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 
 function logger(message) {
   console.log(message);
@@ -25,10 +24,10 @@ function convertYargsOptionsToOclifFlags(options) {
       hidden: opt.hidden,
     };
 
-    if (typeof opt.default !== "undefined") {
+    if (typeof opt.default !== 'undefined') {
       flag.default = opt.default;
 
-      if (opt.type === "boolean") {
+      if (opt.type === 'boolean') {
         if (flag.default === true) {
           flag.allowNo = true;
         }
@@ -51,7 +50,7 @@ function convertYargsOptionsToOclifFlags(options) {
 
 function normalizeFlags(flags) {
   const result = Object.keys(flags).reduce((current, name) => {
-    if (name.includes("-")) {
+    if (name.includes('-')) {
       const normalizedName = camelCase(name);
       current[normalizedName] = flags[name];
     }
@@ -85,13 +84,12 @@ function getRegionAndEdge(flags, clientCommand) {
 }
 
 function getEnvironmentVariables(flags, clientCommand, stack) {
-
-  const accountSid = flags.accountSid || clientCommand.accountSid
-  const authToken = flags.authToken
+  const accountSid = flags.accountSid || clientCommand.accountSid;
+  const authToken = flags.authToken;
   const username = clientCommand.username;
   const password = clientCommand.password;
 
-  let envFileVars = ""; 
+  let envFileVars = '';
 
   if (fs.existsSync(`.${stack}.env`)) {
     envFileVars = `export $(cat .${stack}.env | xargs) && `;
@@ -102,46 +100,37 @@ function getEnvironmentVariables(flags, clientCommand, stack) {
 
 function normalizeArgs(args) {
   return Object.keys(args).reduce((pr, cur) => {
-
-    if(args[cur]) {
-
+    if (args[cur]) {
       return {
         ...pr,
-        [cur]: args[cur].replace(`--${cur}=`, "")
-      } 
-
+        [cur]: args[cur].replace(`--${cur}=`, ''),
+      };
     }
 
     return pr;
-    
   }, {});
 }
 
 function getStackName(flags, clientCommand) {
-
   const accountSid = flags.accountSid || clientCommand.accountSid;
 
   let infraFile = {};
 
   if (fs.existsSync('twilio-infra.json')) {
-
     infraFile = JSON.parse(fs.readFileSync('twilio-infra.json', 'utf8'));
-
   }
 
   return flags.stack || infraFile[accountSid];
-
 }
 
 function setStack(flags, args, clientCommand) {
+  const stackName = getStackName(flags, clientCommand);
 
-  const stackName = getStackName(flags, clientCommand)
-
-  if(stackName) {
+  if (stackName) {
     shell.exec(`pulumi stack init ${stackName}`, { silent: true });
   }
 
-  return stackName
+  return stackName;
 }
 
 /**
@@ -155,34 +144,34 @@ async function checkPulumi() {
   let tmpResult = {
     installed: false,
     local: false,
-    error: "",
+    error: '',
   };
   try {
-    const { stdout, stderr } = await exec("pulumi login");
+    const { stdout, stderr } = await exec('pulumi login');
     if (stderr) {
       tmpResult.error = stderr;
     }
-    if (stdout.includes("(file://~)")) {
+    if (stdout.includes('(file://~)')) {
       tmpResult.local = true;
     }
     return tmpResult;
   } catch (err) {
     throw new TwilioCliError(
-      "\n\nCheck Pulumi CLI failed.\n" +
-        "Try running `pulumi login` to make sure the pulumi CLI is installed.\n" +
-        "** Error message: \n ** " +
+      '\n\nCheck Pulumi CLI failed.\n' +
+        'Try running `pulumi login` to make sure the pulumi CLI is installed.\n' +
+        '** Error message: \n ** ' +
         err.message
     );
   }
 }
 
 /**
- * Run Pulumi CLI command 
- * 
- * @param {*} parseInputs 
- * @param {*} twilioClient 
- * @param {*} command 
- * @param {*} commandFlags 
+ * Run Pulumi CLI command
+ *
+ * @param {*} parseInputs
+ * @param {*} twilioClient
+ * @param {*} command
+ * @param {*} commandFlags
  */
 async function runPulumiCommand(
   parseInputs,
@@ -208,25 +197,27 @@ async function runPulumiCommand(
     ) {
       const answers = await inquirer.prompt([
         {
-          type: "password",
-          name: "passphrase",
-          message: "Enter your passphrase to unlock config/secrets",
+          type: 'password',
+          name: 'passphrase',
+          message: 'Enter your passphrase to unlock config/secrets',
         },
       ]);
       // Add passphrase to env variable
       vars += ` PULUMI_CONFIG_PASSPHRASE=${answers.passphrase}`;
     }
-    const { stdout, stderr } = await exec(
-      `${vars} ${command} --stack=${stackName} ${commandFlags || ""}`
+    const { stdout } = await exec(
+      `${vars} ${command} --stack=${stackName} ${commandFlags || ''}`
     );
     logger(stdout);
   } catch (err) {
-    throw new TwilioCliError("\n\nError running Pulumi CLI command.\n ** " + err.message);
+    throw new TwilioCliError(
+      '\n\nError running Pulumi CLI command.\n ** ' + err.message
+    );
   }
 }
 
-const options = { 
-  'stack': {
+const options = {
+  stack: {
     alias: 's',
     describe: 'The stack to use for resources state',
     type: 'string',
@@ -243,5 +234,5 @@ module.exports = {
   setStack,
   runPulumiCommand,
   getStackName,
-  options
+  options,
 };

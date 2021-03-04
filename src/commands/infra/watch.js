@@ -1,24 +1,25 @@
-const { TwilioClientCommand } = require("@twilio/cli-core").baseCommands;
+const { TwilioClientCommand } = require('@twilio/cli-core').baseCommands;
 
 const {
-  
   convertYargsOptionsToOclifFlags,
   runPulumiCommand,
-  options
-
+  options,
 } = require('../../utils');
 
 class FunctionsWatch extends TwilioClientCommand {
   async run() {
     await super.run();
 
-    runPulumiCommand(this.parse(FunctionsWatch), this.twilioClient, "pulumi watch");
-    
-    return;
+    runPulumiCommand(
+      this.parse(FunctionsWatch),
+      this.twilioClient,
+      'pulumi watch'
+    );
   }
 }
 
-FunctionsWatch.description = "Continuously update resources described in this directory in a Twilio project";
+FunctionsWatch.description =
+  'Continuously update resources described in this directory in a Twilio project';
 
 FunctionsWatch.args = [];
 
