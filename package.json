@@ -8,6 +8,7 @@
     "@oclif/command": "^1.5.19",
     "@oclif/config": "^1.13.3",
     "@twilio/cli-core": "^4.3.3",
+    "inquirer": "^8.0.0",
     "lodash.camelcase": "^4.3.0",
     "lodash.kebabcase": "^4.1.1",
     "shelljs": "^0.8.4",
@@ -76,6 +77,7 @@
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "eslint --ignore-path .gitignore . && npm audit",
+    "linter:fix": "eslint --ignore-path .gitignore . --fix",
     "prepack": "oclif-dev manifest && oclif-dev readme",
     "test": "nyc --check-coverage --lines 90 --reporter=html --reporter=text mocha --forbid-only \"test/**/*.test.js\"",
     "version": "oclif-dev readme && git add README.md"
