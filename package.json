@@ -3,7 +3,7 @@
   "description": "Develop and deploy your Twilio infrastructure using code",
   "version": "0.0.1",
   "author": "Kaique Lupo Leite <klupo@twilio.com>",
-  "bugs": "https://github.com/kaiquelupo/plugin-twilio-infra/issues",
+  "bugs": "https://github.com/twilio-infra-as-code/plugin-twilio-infra/issues",
   "dependencies": {
     "@oclif/command": "^1.5.19",
     "@oclif/config": "^1.13.3",
@@ -37,7 +37,7 @@
     "LICENSE",
     "README.md"
   ],
-  "homepage": "https://github.com/kaiquelupo/plugin-twilio-infra",
+  "homepage": "https://github.com/twilio-infra-as-code/plugin-twilio-infra",
   "keywords": [
     "oclif-plugin",
     "twilio-cli-plugin",
@@ -70,7 +70,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "repository": "kaiquelupo/plugin-twilio-infra",
+  "repository": "twilio-infra-as-code/plugin-twilio-infra",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "eslint --ignore-path .gitignore . && npm audit",

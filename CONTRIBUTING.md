@@ -6,7 +6,7 @@ This plugin is a wrapper around other existing tools. When planning to submit a
 fix please consider submitting the fix to the respective project. When in doubt,
 create an issue and we are happy to point you into the right direction.
 
-- [`twilio-pulumi-provider`](https://github.com/kaiquelupo/twilio-pulumi-provider) - Dynamic Provider to describe Twilio Infrastrucure using Pulumi
+- [`twilio-pulumi-provider`](https://github.com/twilio-infra-as-code/twilio-pulumi-provider) - Dynamic Provider to describe Twilio Infrastrucure using Pulumi
 - [`pulumi-sdk`](https://github.com/pulumi/pulumi) - Pulumi's Infrastructure as Code SDK project.
 
 
@@ -15,7 +15,7 @@ create an issue and we are happy to point you into the right direction.
 1. Clone project and install dependencies\_
 
 ```bash
-git clone https://github.com/kaiquelupo/plugin-twilio-infra
+git clone https://github.com/twilio-infra-as-code/plugin-twilio-infra
 cd plugin-twilio-infra
 npm install
 ```
