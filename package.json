@@ -62,9 +62,6 @@
       "infra:preview": {
         "description": "Previews changes related to resources described in this directory and mapped to a Twilio project"
       },
-      "infra:watch": {
-        "description": "Continuously update resources described in this directory in a Twilio project"
-      },
       "infra:new": {
         "description": "Creates a new project based on a template"
       }
