@@ -1,53 +1,34 @@
 const { TwilioClientCommand } = require('@twilio/cli-core').baseCommands;
-const childProcess = require('child_process');
-const validUrl = require('valid-url');
+const { TwilioCliError } = require('@twilio/cli-core').services.error;
 
-const {
-  convertYargsOptionsToOclifFlags,
-  options,
-  getStackName,
-} = require('../../utils');
+const childProcess = require('child_process');
+const ora = require('ora');
+const { runPulumiCommand, Printer } = require('../../utils');
 
 class InfraNew extends TwilioClientCommand {
   async run() {
     await super.run();
+    try {
+      await runPulumiCommand(['new', 'javascript'], true);
 
-    let { flags, args } = this.parse(InfraNew);
-
-    const repo = validUrl.isUri(args.template) ?
-      args.template :
-      `https://github.com/pulumi/templates/tree/master/${
-        args.template ? args.template : 'javascript'
-      }`;
-
-    let pulumiArgs = ['new', repo];
-    const stackName = getStackName(flags, this.twilioClient);
-    if (stackName) {
-      pulumiArgs.push(`--stack=${stackName}`);
+      // Install twilio-pulumi-provider
+      const spinner = ora('Installing additional dependencies').start();
+      childProcess.execFile(
+        'npm',
+        ['install', 'twilio', 'twilio-pulumi-provider'],
+        () => {
+          spinner.succeed('Addtional dependencies installed');
+          Printer.printSuccess('Project initialized succesfully\n\nAdd you resources to index.js and execute\n  twilio infra:deploy\nto deploy them to your Twilio prject!')
+        }
+      );
+    } catch (error) {
+      throw new TwilioCliError(
+        '\nError executing infra:new:\n' + error.message
+      );
     }
-    childProcess.execFileSync('pulumi', pulumiArgs, { stdio: 'inherit' });
-
-    // Install twilio-pulumi-provider
-    childProcess.execFileSync(
-      'npm',
-      ['install', 'twilio', 'twilio-pulumi-provider'],
-      { stdio: 'inherit' }
-    );
   }
 }
 
-InfraNew.description = 'Creates a new project based on a template';
-
-InfraNew.args = [
-  {
-    name: 'template',
-    required: false,
-    description: 'The template name',
-  },
-];
-
-InfraNew.flags = Object.assign({}, convertYargsOptionsToOclifFlags(options), {
-  profile: TwilioClientCommand.flags.profile,
-});
+InfraNew.description = 'Creates a new project Twilio Infra project';
 
 module.exports = InfraNew;
