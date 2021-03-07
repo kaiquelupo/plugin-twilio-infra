@@ -21,7 +21,7 @@ class Printer {
   }
 
   static printSuccess(message) {
-    console.log(chalk.green(`\n🎉 ${message}`));
+    console.log(chalk.green(`\n🎉 ${message}\n`));
   }
 
   static print(message) {
