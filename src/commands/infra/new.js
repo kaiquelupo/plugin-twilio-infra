@@ -8,9 +8,8 @@ const { runPulumiCommand, Printer } = require('../../utils');
 class InfraNew extends TwilioClientCommand {
   async run() {
     await super.run();
+    await runPulumiCommand(['new', 'javascript'], true);
     try {
-      await runPulumiCommand(['new', 'javascript'], true);
-
       // Install twilio-pulumi-provider
       const spinner = ora('Installing additional dependencies').start();
       childProcess.execFile(
@@ -18,7 +17,9 @@ class InfraNew extends TwilioClientCommand {
         ['install', 'twilio', 'twilio-pulumi-provider'],
         () => {
           spinner.succeed('Addtional dependencies installed');
-          Printer.printSuccess('Project initialized succesfully\n\nAdd you resources to index.js and execute\n  twilio infra:deploy\nto deploy them to your Twilio prject!')
+          Printer.printSuccess(
+            'Project initialized succesfully\n\nAdd you resources to index.js and execute\n  twilio infra:deploy\nto deploy them to your Twilio project!'
+          );
         }
       );
     } catch (error) {
