@@ -10,6 +10,7 @@
     "quotes": ["error", "single"],
     "semi": ["error", "always"],
     "object-curly-spacing": ["error", "always"],
+    "no-console": "off",
     "mocha/no-exclusive-tests": "error",
     "node/no-extraneous-require": [
       "error",

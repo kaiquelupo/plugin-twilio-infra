@@ -61,8 +61,6 @@ USAGE
 * twilio infra:new
 * twilio infra:deploy
 * twilio infra:preview
-* twilio infra:watch
-* twilio infra:stack:new
 
 To see the usage details and options for each subcommand, run `twilio infra:<subcommand> --help`.
 

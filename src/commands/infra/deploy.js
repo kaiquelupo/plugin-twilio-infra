@@ -1,42 +1,27 @@
-const { TwilioClientCommand } = require("@twilio/cli-core").baseCommands;
+const { TwilioClientCommand } = require('@twilio/cli-core').baseCommands;
+const { TwilioCliError } = require('@twilio/cli-core').services.error;
 
-const {
+const fs = require('fs');
 
-  convertYargsOptionsToOclifFlags,
-  runPulumiCommand,
-  options
+const { runPulumiCommand } = require('../../utils');
 
-} = require('../../utils');
-
-
-class FunctionsDeploy extends TwilioClientCommand {
+class InfraDeploy extends TwilioClientCommand {
   async run() {
-
     await super.run();
-    
-    let { flags } = this.parse(FunctionsDeploy);
-    if (!flags.stack) {
-      console.error(
-        "Please provide the name of the Pulumi stack\n e.g. twilio infra:deploy --stack dev\n"
+    await runPulumiCommand(['up'], true, this.twilioClient);
+    try {
+      // Store account SID of the project used for deployment
+      fs.writeFileSync(
+        '.twilio-deploy',
+        JSON.stringify({ accountSid: this.twilioClient.accountSid })
       );
-      return;
+    } catch (error) {
+      throw new TwilioCliError('Error running destroy: ' + error.message);
     }
-
-    await runPulumiCommand(this.parse(FunctionsDeploy), this.twilioClient, "pulumi up", "--yes");
-
-    return;
-
   }
 }
 
-FunctionsDeploy.description = "Deploys and updates resources described in this directory to a Twilio project";
+InfraDeploy.description =
+  'Deploys and updates resources described in this directory to a Twilio project';
 
-FunctionsDeploy.args = [];
-
-FunctionsDeploy.flags = Object.assign(
-  {},
-  convertYargsOptionsToOclifFlags(options),
-  { profile: TwilioClientCommand.flags.profile }
-);
-
-module.exports = FunctionsDeploy;
+module.exports = InfraDeploy;

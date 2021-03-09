@@ -3,13 +3,16 @@
   "description": "Develop and deploy your Twilio infrastructure using code",
   "version": "0.0.1",
   "author": "Kaique Lupo Leite <klupo@twilio.com>",
-  "bugs": "https://github.com/kaiquelupo/plugin-twilio-infra/issues",
+  "bugs": "https://github.com/twilio-infra-as-code/plugin-twilio-infra/issues",
   "dependencies": {
     "@oclif/command": "^1.5.19",
     "@oclif/config": "^1.13.3",
     "@twilio/cli-core": "^4.3.3",
+    "chalk": "^4.1.0",
+    "inquirer": "^8.0.0",
     "lodash.camelcase": "^4.3.0",
     "lodash.kebabcase": "^4.1.1",
+    "ora": "^5.3.0",
     "shelljs": "^0.8.4",
     "valid-url": "^1.0.9"
   },
@@ -36,7 +39,7 @@
     "LICENSE",
     "README.md"
   ],
-  "homepage": "https://github.com/kaiquelupo/plugin-twilio-infra",
+  "homepage": "https://github.com/twilio-infra-as-code/plugin-twilio-infra",
   "keywords": [
     "oclif-plugin",
     "twilio-cli-plugin",
@@ -55,27 +58,28 @@
       "infra": {
         "description": "Locally develop, debug and deploy infrastructure to Twilio project describing it as code"
       },
+      "infra:new": {
+        "description": "Creates a new project based on a template"
+      },
       "infra:deploy": {
         "description": "Deploys and updates resources described in this directory to a Twilio project"
       },
       "infra:preview": {
         "description": "Previews changes related to resources described in this directory and mapped to a Twilio project"
       },
-      "infra:watch": {
-        "description": "Continuously update resources described in this directory in a Twilio project"
-      },
-      "infra:new": {
-        "description": "Creates a new project based on a template"
+      "infra:destory": {
+        "description": "Destroy an existing stack and the deployed resources"
       }
     }
   },
   "publishConfig": {
     "access": "public"
   },
-  "repository": "kaiquelupo/plugin-twilio-infra",
+  "repository": "twilio-infra-as-code/plugin-twilio-infra",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "eslint --ignore-path .gitignore . && npm audit",
+    "linter:fix": "eslint --ignore-path .gitignore . --fix",
     "prepack": "oclif-dev manifest && oclif-dev readme",
     "test": "nyc --check-coverage --lines 90 --reporter=html --reporter=text mocha --forbid-only \"test/**/*.test.js\"",
     "version": "oclif-dev readme && git add README.md"
