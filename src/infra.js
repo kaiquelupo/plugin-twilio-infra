@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { getDeploymentEnvironment } = require('./utils');
+const { getPulumiStack } = require('./utils');
 const TWILIO_INFRA_FILENAME = '.twilio-infra';
 
 /**
@@ -41,7 +41,7 @@ function removeInfraFile() {
  */
 async function addInfra(accountSid, environment) {
   if (!environment) {
-    environment = getDeploymentEnvironment();
+    environment = getPulumiStack();
   }
   let deployments = readInfra();
   deployments[accountSid] = { environment };

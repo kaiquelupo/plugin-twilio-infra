@@ -4,7 +4,7 @@ const childProcess = require('child_process');
 
 const Printer = require('./printer');
 
-function getDeploymentEnvironment() {
+function getPulumiStack() {
   let pulumiOut = runPulumiCommand(['stack', 'ls'], false);
   let result = /^(.*?)\* /m.exec(pulumiOut);
   return result ? result[1] : null;
@@ -64,5 +64,5 @@ function runPulumiCommand(args, interactive = true, twilioClient) {
 module.exports = {
   runPulumiCommand,
   Printer,
-  getDeploymentEnvironment,
+  getPulumiStack,
 };

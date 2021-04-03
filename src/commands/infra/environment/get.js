@@ -2,13 +2,13 @@ const { TwilioClientCommand } = require('@twilio/cli-core').baseCommands;
 const { TwilioCliError } = require('@twilio/cli-core').services.error;
 
 const chalk = require('chalk');
-const { getDeploymentEnvironment, Printer } = require('../../../utils');
+const { getPulumiStack, Printer } = require('../../../utils');
 
 class InfraEnvironmentGet extends TwilioClientCommand {
   async run() {
     await super.run();
     try {
-      let environment = await getDeploymentEnvironment();
+      let environment = getPulumiStack();
       if (environment) {
         Printer.print(
           'Currently using environment: ' + chalk.green(environment)
