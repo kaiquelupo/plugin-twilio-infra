@@ -7,18 +7,18 @@ const TWILIO_INFRA_FILENAME = '.twilio-infra';
  * @returns {Object} Returns deployments stored locally
  */
 function readInfra() {
-  let deployments;
+  let infras;
   try {
-    deployments = JSON.parse(fs.readFileSync(TWILIO_INFRA_FILENAME)) || {};
+    infras = JSON.parse(fs.readFileSync(TWILIO_INFRA_FILENAME)) || {};
   } catch (err) {
-    deployments = {};
+    infras = {};
   }
-  return deployments;
+  return infras;
 }
 
-function writeInfra(deployments) {
+function writeInfra(infras) {
   try {
-    fs.writeFileSync(TWILIO_INFRA_FILENAME, JSON.stringify(deployments));
+    fs.writeFileSync(TWILIO_INFRA_FILENAME, JSON.stringify(infras));
   } catch (err) {
     //TODO: Error handling
   }
@@ -37,16 +37,18 @@ function removeInfraFile() {
  *
  * @param {string} accountSid Account SID of the deployment
  * @param {string} environment Environment name for the deployment
+ * @param {boolean} [deployed=false] Deployment status: set true if deployed
  * @return {Object} Deployments list
  */
-async function addInfra(accountSid, environment) {
+async function addInfra(accountSid, environment, deployed) {
+  deployed = deployed || false;
   if (!environment) {
     environment = getPulumiStack();
   }
-  let deployments = readInfra();
-  deployments[accountSid] = { environment };
-  writeInfra(deployments);
-  return deployments;
+  let infras = readInfra();
+  infras[accountSid] = { environment, deployed };
+  writeInfra(infras);
+  return infras;
 }
 
 /**
@@ -56,16 +58,16 @@ async function addInfra(accountSid, environment) {
  * @return {Object} Deployment list, or empty object if no deployment left
  */
 function removeInfra(accountSid) {
-  let deployments = readInfra();
-  if (deployments[accountSid]) {
-    delete deployments[accountSid];
+  let infras = readInfra();
+  if (infras[accountSid]) {
+    delete infras[accountSid];
   }
-  if (Object.keys(deployments).length === 0) {
+  if (Object.keys(infras).length === 0) {
     removeInfraFile();
   } else {
-    writeInfra(deployments);
+    writeInfra(infras);
   }
-  return deployments;
+  return infras;
 }
 
 module.exports = {
