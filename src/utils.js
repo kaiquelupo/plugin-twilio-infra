@@ -1,7 +1,7 @@
 const { TwilioCliError } = require('@twilio/cli-core').services.error;
 
 const childProcess = require('child_process');
-
+const { readInfra } = require('./infra');
 const Printer = require('./printer');
 
 function getPulumiStack() {
@@ -61,8 +61,34 @@ function runPulumiCommand(args, interactive = true, twilioClient) {
   }
 }
 
+/**
+ * Check if there is already a deployment of the current stack under a different
+ * account SID
+ *
+ * @returns {string | undefined} Account Sid of the project the current stack is deployed to
+ */
+function getEnvironmentDeployment() {
+  let result;
+  try {
+    let stack = getPulumiStack();
+    let infras = readInfra();
+    if (stack && Object.keys(infras).length > 0) {
+      Object.keys(infras).forEach(sid => {
+        if (infras[sid].environment === stack) {
+          result = sid;
+        }
+      });
+    }
+  } catch (err) {
+    console.log(err);
+  }
+
+  return result;
+}
+
 module.exports = {
   runPulumiCommand,
   Printer,
   getPulumiStack,
+  getEnvironmentDeployment,
 };
