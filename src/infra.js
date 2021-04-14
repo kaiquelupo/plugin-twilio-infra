@@ -1,5 +1,4 @@
 const fs = require('fs');
-const { getPulumiStack } = require('./utils');
 const TWILIO_INFRA_FILENAME = '.twilio-infra';
 
 /**
@@ -25,7 +24,7 @@ function writeInfra(infras) {
 }
 
 function removeInfraFile() {
-  fs.access(TWILIO_INFRA_FILENAME, fs.constants.F_OK, (error) => {
+  fs.access(TWILIO_INFRA_FILENAME, fs.constants.F_OK, error => {
     if (!error) {
       fs.unlinkSync(TWILIO_INFRA_FILENAME, { force: true });
     }
@@ -42,9 +41,6 @@ function removeInfraFile() {
  */
 async function addInfra(accountSid, environment, deployed) {
   deployed = deployed || false;
-  if (!environment) {
-    environment = getPulumiStack();
-  }
   let infras = readInfra();
   infras[accountSid] = { environment, deployed };
   writeInfra(infras);
