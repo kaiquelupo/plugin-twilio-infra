@@ -1,9 +1,9 @@
 const { TwilioClientCommand } = require('@twilio/cli-core').baseCommands;
 const { TwilioCliError } = require('@twilio/cli-core').services.error;
 
-const { addInfra } = require('../../deployments');
+const { addInfra } = require('../../infra');
 
-const { runPulumiCommand } = require('../../utils');
+const { runPulumiCommand, getPulumiStack } = require('../../utils');
 
 class InfraDeploy extends TwilioClientCommand {
   async run() {
@@ -11,7 +11,7 @@ class InfraDeploy extends TwilioClientCommand {
     runPulumiCommand(['up'], true, this.twilioClient);
     try {
       // Store account SID of the project used for deployment
-      addInfra(this.twilioClient.accountSid);
+      addInfra(this.twilioClient.accountSid, getPulumiStack(), true);
     } catch (error) {
       throw new TwilioCliError('Error running destroy: ' + error.message);
     }
