@@ -13,7 +13,7 @@ class InfraDeploy extends TwilioClientCommand {
   async run() {
     await super.run();
     let deployment = getEnvironmentDeployment();
-    if (deployment && deployment !== this.twilioClient) {
+    if (deployment && deployment !== this.twilioClient.accountSid) {
       throw new TwilioCliError(
         `The current stack is already deployed to ${deployment}. Please switch to that profile or define a new envirnoment`
       );
