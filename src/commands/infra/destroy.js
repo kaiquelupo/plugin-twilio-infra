@@ -1,8 +1,7 @@
 const { TwilioClientCommand } = require('@twilio/cli-core').baseCommands;
 const { TwilioCliError } = require('@twilio/cli-core').services.error;
 
-const fs = require('fs');
-
+const { removeInfra } = require('../../infra');
 const { runPulumiCommand, Printer } = require('../../utils');
 
 class InfraDestroy extends TwilioClientCommand {
@@ -10,12 +9,8 @@ class InfraDestroy extends TwilioClientCommand {
     await super.run();
     await runPulumiCommand(['destroy'], true, this.twilioClient);
     try {
-      fs.access('./.twilio-deploy', fs.constants.F_OK, error => {
-        if (!error) {
-          fs.unlinkSync('./.twilio-deploy', { force: true });
-          Printer.printSuccess('Resource(s) destroyed succesfully!');
-        }
-      });
+      removeInfra(this.twilioClient.accountSid);
+      Printer.printSuccess('Resource(s) destroyed succesfully!');
     } catch (error) {
       throw new TwilioCliError('Error running destroy: ' + error.message);
     }
