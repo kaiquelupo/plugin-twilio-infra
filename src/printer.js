@@ -25,7 +25,7 @@ class Printer {
   }
 
   static print(message) {
-    console.log(message);
+    console.log(`\n${message}\n`);
   }
 }
 
