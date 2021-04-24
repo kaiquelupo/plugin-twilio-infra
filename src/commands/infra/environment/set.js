@@ -12,18 +12,23 @@ class InfraEnvironmentSet extends TwilioClientCommand {
     let environment = args.environmentName;
     try {
       let deploymentEnvironments = readInfra();
-      if (!deploymentEnvironments[environment]) {
+      if (deploymentEnvironments[environment]) {
+        runPulumiCommand(
+          ['stack', 'select', environment],
+          false,
+          this.twilioClient
+        );
+        Printer.printSuccess(`Environment set to ${environment}`);
+      } else {
         Printer.print(
           'Environment ' +
             chalk.green(environment) +
             ' is not defined. Use:\n  twilio infra:environment:new\nto define a new environment and deploy it.'
         );
       }
-      runPulumiCommand(['stack', 'select', environment], false, this.twilioClient);
-      Printer.printSuccess(`Environment set to ${environment}`);
     } catch (error) {
       throw new TwilioCliError(
-        'Error running `environment:set`: ' + error.message
+        'Error running `infra:environment:set`: ' + error.message
       );
     }
   }
