@@ -10,7 +10,7 @@ class InfraDestroy extends TwilioClientCommand {
     await runPulumiCommand(['destroy'], true, this.twilioClient);
     try {
       removeInfra(this.twilioClient.accountSid);
-      Printer.printSuccess('Resource(s) destroyed succesfully!');
+      Printer.printSuccess('Resource(s) destroyed successfully!');
     } catch (error) {
       throw new TwilioCliError('Error running destroy: ' + error.message);
     }
