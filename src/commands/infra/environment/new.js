@@ -25,7 +25,7 @@ class InfraEnvironmentNew extends TwilioClientCommand {
           addInfra(accountSid, getPulumiStack());
         }
         Printer.printSuccess(
-          'New environment created. When you are ready, use\n\n  $ twilio infra:deploy\n\nto deploy it to your Twilio prpject'
+          'New environment created. When you are ready, use\n\n  $ twilio infra:deploy\n\nto deploy it to your Twilio project'
         );
       }
     } catch (error) {
