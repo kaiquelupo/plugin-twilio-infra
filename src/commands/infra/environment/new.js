@@ -1,6 +1,7 @@
 const { TwilioClientCommand } = require('@twilio/cli-core').baseCommands;
 const { TwilioCliError } = require('@twilio/cli-core').services.error;
 
+const inquirer = require('inquirer');
 const { readInfra, addInfra } = require('../../../infra');
 const { getPulumiStack, Printer, runPulumiCommand } = require('../../../utils');
 
@@ -20,6 +21,17 @@ class InfraEnvironmentNew extends TwilioClientCommand {
           `Your Twilio project ${accountSid} is already associated to another environment (${deploymentEnvironments[accountSid].environment})\n\nUse\n\n  $ twilio profiles:use <profile name>\n\nto select a different project, or:\n\n  $ twilio profiles:create\n\nto create a new profile.`
         );
       } else {
+        if (deploymentEnvironments[accountSid]) {
+          const answer = await inquirer.prompt({
+            type: 'confirm',
+            name: 'confirm',
+            message: `The current Twilio project (${accountSid}) is already associated to environment "${deploymentEnvironments[accountSid].environment}", but it's not deployed. \nAre you sure you want to associate a new environment to it?`,
+          });
+          if (!answer.confirm) {
+            Printer.print('New environemnt not defined');
+            return;
+          }
+        }
         runPulumiCommand(['stack', 'init', args.environmentName]);
         if (this.twilioClient) {
           addInfra(accountSid, getPulumiStack());
@@ -30,14 +42,14 @@ class InfraEnvironmentNew extends TwilioClientCommand {
       }
     } catch (error) {
       throw new TwilioCliError(
-        'Error running `environment:get`: ' + error.message
+        'Error running `environment:new`: ' + error.message
       );
     }
   }
 }
 
 InfraEnvironmentNew.description =
-  'Get the deployment environment set for the current project';
+  'Create a new environment for the current Twilio project';
 
 InfraEnvironmentNew.args = [
   {
