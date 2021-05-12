@@ -1,7 +1,7 @@
 const { TwilioClientCommand } = require('@twilio/cli-core').baseCommands;
 const { TwilioCliError } = require('@twilio/cli-core').services.error;
 
-const { removeInfra } = require('../../infra');
+const { destroyInfra } = require('../../infra');
 const { runPulumiCommand, Printer } = require('../../utils');
 
 class InfraDestroy extends TwilioClientCommand {
@@ -9,7 +9,7 @@ class InfraDestroy extends TwilioClientCommand {
     await super.run();
     await runPulumiCommand(['destroy'], true, this.twilioClient);
     try {
-      removeInfra(this.twilioClient.accountSid);
+      destroyInfra(this.twilioClient.accountSid);
       Printer.printSuccess('Resource(s) destroyed successfully!');
     } catch (error) {
       throw new TwilioCliError('Error running destroy: ' + error.message);
@@ -18,6 +18,6 @@ class InfraDestroy extends TwilioClientCommand {
 }
 
 InfraDestroy.description =
-  'Destroy an existing stack and the deployed resources';
+  'Destroy deployed resources';
 
 module.exports = InfraDestroy;
