@@ -12,13 +12,24 @@ class InfraEnvironmentSet extends TwilioClientCommand {
     let environment = args.environmentName;
     try {
       let deploymentEnvironments = readInfra();
-      if (deploymentEnvironments[environment]) {
+      let twilioProject;
+      for (let asid in deploymentEnvironments) {
+        if (deploymentEnvironments[asid].environment === environment) {
+          twilioProject = asid;
+        }
+      }
+      if (twilioProject) {
         runPulumiCommand(
           ['stack', 'select', environment],
           false,
           this.twilioClient
         );
         Printer.printSuccess(`Environment set to ${environment}`);
+        if (twilioProject !== this.twilioClient.accountSid) {
+          Printer.print(
+            `Remember to switch to Twilio project ${twilioProject} before deploying the resources.`
+          );
+        }
       } else {
         Printer.print(
           'Environment ' +
