@@ -22,7 +22,7 @@ class InfraNew extends TwilioClientCommand {
             addInfra(this.twilioClient.accountSid, getPulumiStack());
           }
           Printer.printSuccess(
-            'Project initialized succesfully\n\nAdd you resources to index.js and execute\n  twilio infra:deploy\nto deploy them to your Twilio project!'
+            'Project initialized succesfully\n\nAdd your resources to index.js and execute\n  twilio infra:deploy\nto deploy them to your Twilio project!'
           );
         }
       );
