@@ -24,7 +24,7 @@ function writeInfra(infras) {
 }
 
 function removeInfraFile() {
-  fs.access(TWILIO_INFRA_FILENAME, fs.constants.F_OK, error => {
+  fs.access(TWILIO_INFRA_FILENAME, fs.constants.F_OK, (error) => {
     if (!error) {
       fs.unlinkSync(TWILIO_INFRA_FILENAME, { force: true });
     }
@@ -66,8 +66,18 @@ function removeInfra(accountSid) {
   return infras;
 }
 
+function destroyInfra(accountSid) {
+  let infras = readInfra();
+  if (infras[accountSid]) {
+    infras[accountSid].deployed = false;
+  }
+  writeInfra(infras);
+  return infras;
+}
+
 module.exports = {
   addInfra,
   removeInfra,
   readInfra,
+  destroyInfra,
 };
