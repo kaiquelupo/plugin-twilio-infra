@@ -1,7 +1,7 @@
 {
   "name": "plugin-twilio-infra",
   "description": "Develop and deploy your Twilio infrastructure using code",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": "Kaique Lupo Leite <klupo@twilio.com>",
   "contributors": [
     {
@@ -94,9 +94,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/twilio-infra-as-code/plugin-twilio-infra"},
-  "scripts": {
-
-    "linter:fix": "eslint --ignore-path .gitignore . --fix",
-
+  "scripts": { 
+    "linter:fix": "eslint --ignore-path .gitignore . --fix"
   }
 }
