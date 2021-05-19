@@ -83,11 +83,8 @@
   },
   "repository": "twilio-infra-as-code/plugin-twilio-infra",
   "scripts": {
-    "postpack": "rm -f oclif.manifest.json",
-    "posttest": "eslint --ignore-path .gitignore . && npm audit",
+
     "linter:fix": "eslint --ignore-path .gitignore . --fix",
-    "prepack": "oclif-dev manifest && oclif-dev readme",
-    "test": "nyc --check-coverage --lines 90 --reporter=html --reporter=text mocha --forbid-only \"test/**/*.test.js\"",
-    "version": "oclif-dev readme && git add README.md"
+
   }
 }
