@@ -69,6 +69,15 @@
       },
       "infra:destory": {
         "description": "Destroy an existing stack and the deployed resources"
+      },
+      "infra:environment:new": {
+        "description": "Create a new environment for the current Twilio project"
+      },
+      "infra:environment:get": {
+        "description": "Get the deployment environment set for the current project"
+      },
+      "infra:environment:set": {
+        "description": "Set the deployment environment for the current project"
       }
     }
   },
