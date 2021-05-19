@@ -1,7 +1,7 @@
 {
   "name": "plugin-twilio-infra",
   "description": "Develop and deploy your Twilio infrastructure using code",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "author": "Kaique Lupo Leite <klupo@twilio.com>",
   "bugs": "https://github.com/twilio-infra-as-code/plugin-twilio-infra/issues",
   "dependencies": {

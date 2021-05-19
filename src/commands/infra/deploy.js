@@ -1,22 +1,29 @@
 const { TwilioClientCommand } = require('@twilio/cli-core').baseCommands;
 const { TwilioCliError } = require('@twilio/cli-core').services.error;
 
-const fs = require('fs');
+const { addInfra } = require('../../infra');
 
-const { runPulumiCommand } = require('../../utils');
+const {
+  runPulumiCommand,
+  getPulumiStack,
+  getEnvironmentDeployment,
+} = require('../../utils');
 
 class InfraDeploy extends TwilioClientCommand {
   async run() {
     await super.run();
-    await runPulumiCommand(['up'], true, this.twilioClient);
+    let deployment = getEnvironmentDeployment();
+    if (deployment && deployment !== this.twilioClient.accountSid) {
+      throw new TwilioCliError(
+        `The current stack is already deployed to ${deployment}. Please switch to that profile or define a new environment`
+      );
+    }
+    runPulumiCommand(['up'], true, this.twilioClient);
     try {
       // Store account SID of the project used for deployment
-      fs.writeFileSync(
-        '.twilio-deploy',
-        JSON.stringify({ accountSid: this.twilioClient.accountSid })
-      );
+      addInfra(this.twilioClient.accountSid, getPulumiStack(), true);
     } catch (error) {
-      throw new TwilioCliError('Error running destroy: ' + error.message);
+      throw new TwilioCliError('Error running deploy: ' + error.message);
     }
   }
 }

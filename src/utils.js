@@ -1,10 +1,14 @@
 const { TwilioCliError } = require('@twilio/cli-core').services.error;
 
-const util = require('util');
 const childProcess = require('child_process');
-const exec = util.promisify(childProcess.exec);
-
+const { readInfra } = require('./infra');
 const Printer = require('./printer');
+
+function getPulumiStack() {
+  let pulumiOut = runPulumiCommand(['stack', 'ls'], false);
+  let result = /^(.*?)\* /m.exec(pulumiOut);
+  return result ? result[1] : null;
+}
 
 /**
  * Add environment variable to process.env
@@ -32,12 +36,11 @@ function getEnvironmentVariables(twilioClient) {
  * @param {Array} args Arguments to Pulumi CLI command
  * @param {boolean=true} interactive Whether to run the command in interactive mode (i.e. gathering input from user)
  * @param {{}} twilioClient Initialized Twilio client
+ * @return {null | string} Pulumi command output if executed non interactively. Void if execute interactively
  */
 
-async function runPulumiCommand(args, interactive = true, twilioClient) {
+function runPulumiCommand(args, interactive = true, twilioClient) {
   try {
-    let envVars = '';
-    envVars = getEnvironmentVariables(twilioClient);
     if (interactive) {
       Printer.printHeader('Pulumi CLI output');
       childProcess.execFileSync('pulumi', args, {
@@ -46,16 +49,10 @@ async function runPulumiCommand(args, interactive = true, twilioClient) {
       });
       Printer.printHeader('End of Pulumi CLI output');
     } else {
-      const { stdout, stderr } = await exec(
-        `${envVars} pulumi ${args.join(' ')}`
-      );
-      if (stderr) {
-        if (!stdout) {
-          throw new TwilioCliError(stderr);
-        }
-        Printer.printPulumiError(stderr);
-      }
-      Printer.printPulumiOutput(stdout);
+      const stdout = childProcess.execSync(`pulumi ${args.join(' ')}`, {
+        env: getEnvironmentVariables(twilioClient),
+      });
+      return stdout.toString();
     }
   } catch (error) {
     throw new TwilioCliError(
@@ -64,7 +61,34 @@ async function runPulumiCommand(args, interactive = true, twilioClient) {
   }
 }
 
+/**
+ * Check if there is already a deployment of the current stack under a different
+ * account SID
+ *
+ * @returns {string | undefined} Account Sid of the project the current stack is deployed to
+ */
+function getEnvironmentDeployment() {
+  let result;
+  try {
+    let stack = getPulumiStack();
+    let infras = readInfra();
+    if (stack && Object.keys(infras).length > 0) {
+      Object.keys(infras).forEach(sid => {
+        if (infras[sid].environment === stack) {
+          result = sid;
+        }
+      });
+    }
+  } catch (err) {
+    console.log(err);
+  }
+
+  return result;
+}
+
 module.exports = {
   runPulumiCommand,
   Printer,
+  getPulumiStack,
+  getEnvironmentDeployment,
 };
