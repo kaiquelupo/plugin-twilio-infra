@@ -81,7 +81,9 @@
   "publishConfig": {
     "access": "public"
   },
-  "repository": "twilio-infra-as-code/plugin-twilio-infra",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/twilio-infra-as-code/plugin-twilio-infra"},
   "scripts": {
 
     "linter:fix": "eslint --ignore-path .gitignore . --fix",
