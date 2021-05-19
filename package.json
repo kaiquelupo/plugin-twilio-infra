@@ -3,6 +3,16 @@
   "description": "Develop and deploy your Twilio infrastructure using code",
   "version": "0.2.0",
   "author": "Kaique Lupo Leite <klupo@twilio.com>",
+  "contributors": [
+    {
+      "name": "Giuseppe Verni",
+      "email": "gverni@twilio.com"
+    },
+    {
+      "name": "Maria Bermudez",
+      "email": "mbermudez@twilio.com"
+    }
+  ],
   "bugs": "https://github.com/twilio-infra-as-code/plugin-twilio-infra/issues",
   "dependencies": {
     "@oclif/command": "^1.5.19",
