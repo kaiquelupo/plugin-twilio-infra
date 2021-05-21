@@ -41,7 +41,7 @@ $ brew tap twilio/brew && brew install twilio
 To get started, run `npm install` to install the plugin package dependencies. Afterwards, run the following command:
 
 ```sh-session
-$ twilio plugins:install twilio-infra-as-code/plugin-twilio-infra
+$ twilio plugins:install plugin-twilio-infra
 ```
 
 You can now start using the `twilio infra` commands on your machine.
@@ -61,6 +61,10 @@ USAGE
 * twilio infra:new
 * twilio infra:deploy
 * twilio infra:preview
+* twilio infra:destroy
+* twilio infra:environment:new
+* twilio infra:environment:set
+* twilio infra:environment:get
 
 To see the usage details and options for each subcommand, run `twilio infra:<subcommand> --help`.
 
