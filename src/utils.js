@@ -22,7 +22,6 @@ function getEnvironmentVariables(twilioClient) {
   let envVars = process.env;
   if (twilioClient) {
     envVars.TWILIO_ACCOUNT_SID = twilioClient.accountSid;
-    envVars.TWILIO_AUTH_TOKEN = twilioClient.password;
     envVars.TWILIO_USERNAME = twilioClient.username;
     envVars.TWILIO_PASSWORD = twilioClient.password;
   }
