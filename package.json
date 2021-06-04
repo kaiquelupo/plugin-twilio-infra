@@ -19,6 +19,7 @@
     "@oclif/config": "^1.13.3",
     "@twilio/cli-core": "^4.3.3",
     "chalk": "^4.1.0",
+    "dotenv": "^10.0.0",
     "inquirer": "^8.0.0",
     "ora": "^5.3.0",
     "shelljs": "^0.8.4"
@@ -74,9 +75,6 @@
       "infra:preview": {
         "description": "Previews changes related to resources described in this directory and mapped to a Twilio project"
       },
-      "infra:destory": {
-        "description": "Destroy an existing stack and the deployed resources"
-      },
       "infra:environment:new": {
         "description": "Create a new environment for the current Twilio project"
       },
@@ -93,8 +91,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/twilio-infra-as-code/plugin-twilio-infra"},
-  "scripts": { 
+    "url": "https://github.com/twilio-infra-as-code/plugin-twilio-infra"
+  },
+  "scripts": {
     "linter:fix": "eslint --ignore-path .gitignore . --fix"
   }
 }

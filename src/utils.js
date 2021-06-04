@@ -3,6 +3,7 @@ const { TwilioCliError } = require('@twilio/cli-core').services.error;
 const childProcess = require('child_process');
 const { readInfra } = require('./infra');
 const Printer = require('./printer');
+const fs = require('fs');
 
 function getPulumiStack() {
   let pulumiOut = runPulumiCommand(['stack', 'ls'], false);
@@ -18,8 +19,32 @@ function getPulumiStack() {
  * @param {string?} stack Pulumi stack
  * @return {{}} Environment key-value pairs
  */
-function getEnvironmentVariables(twilioClient) {
+function getEnvironmentVariables(twilioClient, args) {
+
   let envVars = process.env;
+
+  //remove recursion
+  if(args[0] !== "stack" && args[1] !== "ls") {
+
+    let environment = getPulumiStack();
+
+    if(environment){
+
+      const envFilePath = `${process.cwd()}/.${environment}.env`;
+
+      if (fs.existsSync(envFilePath)) {
+
+          const dotenv = require('dotenv').config({ path: envFilePath });
+
+          envVars = {
+            ...envVars,
+            ...dotenv.parsed
+          }
+
+      }
+    }
+  }
+  
   if (twilioClient) {
     envVars.TWILIO_ACCOUNT_SID = twilioClient.accountSid;
     envVars.TWILIO_USERNAME = twilioClient.username;
@@ -44,12 +69,12 @@ function runPulumiCommand(args, interactive = true, twilioClient) {
       Printer.printHeader('Pulumi CLI output');
       childProcess.execFileSync('pulumi', args, {
         stdio: 'inherit',
-        env: getEnvironmentVariables(twilioClient),
+        env: getEnvironmentVariables(twilioClient, args),
       });
       Printer.printHeader('End of Pulumi CLI output');
     } else {
       const stdout = childProcess.execSync(`pulumi ${args.join(' ')}`, {
-        env: getEnvironmentVariables(twilioClient),
+        env: getEnvironmentVariables(twilioClient, args),
       });
       return stdout.toString();
     }
