@@ -15,16 +15,15 @@ function getPulumiStack() {
  * Add environment variable to process.env
  *
  * @param {{}} twilioClient Initialized Twilio Client
- * @param {*?} flags Command flags
- * @param {string?} stack Pulumi stack
+ * @param {*?} shouldGetEnvsFromFile Whether to search and load env file for the current stack  
  * @return {{}} Environment key-value pairs
  */
-function getEnvironmentVariables(twilioClient, args) {
+function getEnvironmentVariables(twilioClient, shouldGetEnvFromFile) {
 
   let envVars = process.env;
 
   //remove recursion
-  if(args[0] !== "stack" && args[1] !== "ls") {
+  if(shouldGetEnvFromFile) {
 
     let environment = getPulumiStack();
 
@@ -65,19 +64,24 @@ function getEnvironmentVariables(twilioClient, args) {
 
 function runPulumiCommand(args, interactive = true, twilioClient) {
   try {
+
+    const isDifferentFromGetPulumiStack = 
+      (args[0] !== "stack" && args[1] !== "ls");
+
     if (interactive) {
       Printer.printHeader('Pulumi CLI output');
       childProcess.execFileSync('pulumi', args, {
         stdio: 'inherit',
-        env: getEnvironmentVariables(twilioClient, args),
+        env: getEnvironmentVariables(twilioClient, isDifferentFromGetPulumiStack),
       });
       Printer.printHeader('End of Pulumi CLI output');
     } else {
       const stdout = childProcess.execSync(`pulumi ${args.join(' ')}`, {
-        env: getEnvironmentVariables(twilioClient, args),
+        env: getEnvironmentVariables(twilioClient, isDifferentFromGetPulumiStack),
       });
       return stdout.toString();
     }
+
   } catch (error) {
     throw new TwilioCliError(
       '\n\nError running Pulumi CLI command.\n ** ' + error.message
