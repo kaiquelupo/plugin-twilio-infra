@@ -1,9 +1,9 @@
 const { TwilioCliError } = require('@twilio/cli-core').services.error;
-
 const childProcess = require('child_process');
 const { readInfra } = require('./infra');
 const Printer = require('./printer');
 const fs = require('fs');
+const dotenv = require('dotenv');
 
 function getPulumiStack() {
   let pulumiOut = runPulumiCommand(['stack', 'ls'], false);
@@ -34,11 +34,11 @@ function getEnvironmentVariables(twilioClient, args) {
 
       if (fs.existsSync(envFilePath)) {
 
-          const dotenv = require('dotenv').config({ path: envFilePath });
+          const env = dotenv.config({ path: envFilePath });
 
           envVars = {
             ...envVars,
-            ...dotenv.parsed
+            ...env.parsed
           }
 
       }
