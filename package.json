@@ -75,6 +75,9 @@
       "infra:preview": {
         "description": "Previews changes related to resources described in this directory and mapped to a Twilio project"
       },
+      "infra:destroy": {
+        "description": "Destroy an existing stack and the deployed resources"
+      },
       "infra:environment:new": {
         "description": "Create a new environment for the current Twilio project"
       },
