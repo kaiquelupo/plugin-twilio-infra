@@ -29,7 +29,7 @@ function getEnvironmentVariables(twilioClient, shouldGetEnvFromFile) {
 
     if(environment){
 
-      const envFilePath = `${process.cwd()}/.${environment}.env`;
+      const envFilePath = `${process.cwd()}/.env.${environment}`;
 
       if (fs.existsSync(envFilePath)) {
 
