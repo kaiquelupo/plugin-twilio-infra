@@ -58,13 +58,13 @@ USAGE
 ## Commands
 
 <!-- commands -->
-* twilio infra:new
-* twilio infra:deploy
-* twilio infra:preview
-* twilio infra:destroy
-* twilio infra:environment:new
-* twilio infra:environment:set
-* twilio infra:environment:get
+* `twilio infra:new`: Creates a new project using Pulumi provider
+* `twilio infra:deploy`: Deploys and updates resources described in this directory to a Twilio project. 
+* `twilio infra:preview`: Previews changes without deploying them to your Twilio project
+* `twilio infra:destroy`: Destroy deployed resources associated to a specific environment
+* `twilio infra:environment:new`: Create a new environment for the current Twilio project
+* `twilio infra:environment:set`: Get the deployment environment set for the current project
+* `twilio infra:environment:get`: Set the deployment environment for the current project
 
 To see the usage details and options for each subcommand, run `twilio infra:<subcommand> --help`.
 
