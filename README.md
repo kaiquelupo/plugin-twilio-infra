@@ -58,15 +58,27 @@ USAGE
 ## Commands
 
 <!-- commands -->
-* twilio infra:new
-* twilio infra:deploy
-* twilio infra:preview
-* twilio infra:destroy
-* twilio infra:environment:new
-* twilio infra:environment:set
-* twilio infra:environment:get
+* `twilio infra:new`: Creates a new project using Pulumi provider
+* `twilio infra:deploy`: Deploys and updates resources described in this directory to a Twilio project. Additional environment variables can be defined using `.env` files
+* `twilio infra:preview`: Previews changes without deploying them to your Twilio project
+* `twilio infra:destroy`: Destroy deployed resources associated to a specific environment
+* `twilio infra:environment:new`: Create a new environment for the current Twilio project
+* `twilio infra:environment:set`: Get the deployment environment set for the current project
+* `twilio infra:environment:get`: Set the deployment environment for the current project
 
 To see the usage details and options for each subcommand, run `twilio infra:<subcommand> --help`.
+
+## Environment variables
+
+Environment variables used by the `infra` commands can be store in a `.env` file. Each _deployment environment_ can have his own file. The `env` file needs to be placed in the directory where the infra command is executed and it needs to respect the following naming convention:
+```
+.env.<environment name>
+```
+For example, if your environment is called `dev` the file needs to be called: 
+```
+.env.dev
+```
+`.env` file without suffix will not be loaded automatically by the CLI plugin. 
 
 ## Contributing
 
