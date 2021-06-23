@@ -66,7 +66,7 @@ function runPulumiCommand(args, interactive = true, twilioClient) {
   try {
 
     const shouldGetEnvFromFile = 
-      (args[0] !== "stack" && args[1] !== "ls") &&
+      !(args[0] === "stack" && args[1] === "ls") &&
       (args[0] !== "new");
 
     if (interactive) {
