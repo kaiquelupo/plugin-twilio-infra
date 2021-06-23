@@ -9,7 +9,7 @@ const { addInfra } = require('../../infra');
 class InfraNew extends TwilioClientCommand {
   async run() {
     await super.run();
-    await runPulumiCommand(['new', 'javascript'], true);
+    await runPulumiCommand(['new', 'javascript'], false);
     try {
       // Install twilio-pulumi-provider
       const spinner = ora('Installing additional dependencies').start();

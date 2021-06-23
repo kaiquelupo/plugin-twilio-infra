@@ -5,7 +5,7 @@ const { runPulumiCommand } = require('../../utils');
 class InfraPreview extends TwilioClientCommand {
   async run() {
     await super.run();
-    await runPulumiCommand(['preview'], true, this.twilioClient);
+    await runPulumiCommand(['preview'], true, true, this.twilioClient);
   }
 }
 

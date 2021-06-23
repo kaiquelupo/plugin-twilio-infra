@@ -7,7 +7,7 @@ const { runPulumiCommand, Printer } = require('../../utils');
 class InfraDestroy extends TwilioClientCommand {
   async run() {
     await super.run();
-    await runPulumiCommand(['destroy'], true, this.twilioClient);
+    await runPulumiCommand(['destroy'], true, true, this.twilioClient);
     try {
       destroyInfra(this.twilioClient.accountSid);
       Printer.printSuccess('Resource(s) destroyed successfully!');

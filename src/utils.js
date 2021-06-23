@@ -6,7 +6,7 @@ const fs = require('fs');
 const dotenv = require('dotenv');
 
 function getPulumiStack() {
-  let pulumiOut = runPulumiCommand(['stack', 'ls'], false);
+  let pulumiOut = runPulumiCommand(['stack', 'ls'], false, false);
   let result = /^(.*?)\* /m.exec(pulumiOut);
   return result ? result[1] : null;
 }
@@ -15,15 +15,15 @@ function getPulumiStack() {
  * Add environment variable to process.env
  *
  * @param {{}} twilioClient Initialized Twilio Client
- * @param {*?} shouldGetEnvsFromFile Whether to search and load env file for the current stack  
+ * @param {boolean} checkEnvFile Whether to search and load env file for the current stack  
  * @return {{}} Environment key-value pairs
  */
-function getEnvironmentVariables(twilioClient, shouldGetEnvFromFile) {
+function getEnvironmentVariables(twilioClient, checkEnvFile) {
 
   let envVars = process.env;
 
   //remove recursion
-  if(shouldGetEnvFromFile) {
+  if(checkEnvFile) {
 
     let environment = getPulumiStack();
 
@@ -57,27 +57,25 @@ function getEnvironmentVariables(twilioClient, shouldGetEnvFromFile) {
  * Execute Pulumi CLI command
  *
  * @param {Array} args Arguments to Pulumi CLI command
- * @param {boolean=true} interactive Whether to run the command in interactive mode (i.e. gathering input from user)
+ * @param {boolean} checkEnvFile Whether to search and load env file for the current stack 
+ * @param {boolean=true} interactive Whether to run the command in interactive mode (i.e. gathering input from user) 
  * @param {{}} twilioClient Initialized Twilio client
  * @return {null | string} Pulumi command output if executed non interactively. Void if execute interactively
  */
 
-function runPulumiCommand(args, interactive = true, twilioClient) {
+function runPulumiCommand(args, checkEnvFile, interactive = true, twilioClient) {
   try {
-
-    const isDifferentFromGetPulumiStack = 
-      (args[0] !== "stack" && args[1] !== "ls");
 
     if (interactive) {
       Printer.printHeader('Pulumi CLI output');
       childProcess.execFileSync('pulumi', args, {
         stdio: 'inherit',
-        env: getEnvironmentVariables(twilioClient, isDifferentFromGetPulumiStack),
+        env: getEnvironmentVariables(twilioClient, checkEnvFile),
       });
       Printer.printHeader('End of Pulumi CLI output');
     } else {
       const stdout = childProcess.execSync(`pulumi ${args.join(' ')}`, {
-        env: getEnvironmentVariables(twilioClient, isDifferentFromGetPulumiStack),
+        env: getEnvironmentVariables(twilioClient, checkEnvFile),
       });
       return stdout.toString();
     }
