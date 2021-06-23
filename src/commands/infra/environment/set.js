@@ -22,7 +22,6 @@ class InfraEnvironmentSet extends TwilioClientCommand {
         runPulumiCommand(
           ['stack', 'select', environment],
           false,
-          false,
           this.twilioClient
         );
         Printer.printSuccess(`Environment set to ${environment}`);

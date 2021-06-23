@@ -32,7 +32,7 @@ class InfraEnvironmentNew extends TwilioClientCommand {
             return;
           }
         }
-        runPulumiCommand(['stack', 'init', args.environmentName], false);
+        runPulumiCommand(['stack', 'init', args.environmentName]);
         if (this.twilioClient) {
           addInfra(accountSid, getPulumiStack());
         }
