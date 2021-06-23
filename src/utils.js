@@ -65,19 +65,20 @@ function getEnvironmentVariables(twilioClient, shouldGetEnvFromFile) {
 function runPulumiCommand(args, interactive = true, twilioClient) {
   try {
 
-    const isDifferentFromGetPulumiStack = 
-      (args[0] !== "stack" && args[1] !== "ls");
+    const shouldGetEnvFromFile = 
+      !(args[0] === "stack" && args[1] === "ls") &&
+      (args[0] !== "new");
 
     if (interactive) {
       Printer.printHeader('Pulumi CLI output');
       childProcess.execFileSync('pulumi', args, {
         stdio: 'inherit',
-        env: getEnvironmentVariables(twilioClient, isDifferentFromGetPulumiStack),
+        env: getEnvironmentVariables(twilioClient, shouldGetEnvFromFile),
       });
       Printer.printHeader('End of Pulumi CLI output');
     } else {
       const stdout = childProcess.execSync(`pulumi ${args.join(' ')}`, {
-        env: getEnvironmentVariables(twilioClient, isDifferentFromGetPulumiStack),
+        env: getEnvironmentVariables(twilioClient, shouldGetEnvFromFile),
       });
       return stdout.toString();
     }
