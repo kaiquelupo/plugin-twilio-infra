@@ -70,7 +70,7 @@ To see the usage details and options for each subcommand, run `twilio infra:<sub
 
 ## Environment variables
 
-Environment variables used by the `infra` commands can be store in a `.env` file. Each _deployment environment_ can have his own file. The `env` file needs to be placed in the directory where the infra command is executed and it needs to respect the following naming convention:
+Environment variables used by the `infra` commands can be stored in a `.env` file. Each _deployment environment_ can have its own file. The `env` file needs to be placed in the directory where the infra command is executed and needs to use the following naming convention:
 ```
 .env.<environment name>
 ```
