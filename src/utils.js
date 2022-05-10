@@ -1,168 +1,123 @@
-const path = require("path");
-const camelCase = require("lodash.camelcase");
-const { flags } = require("@oclif/command");
+const { TwilioCliError } = require('@twilio/cli-core').services.error;
+const childProcess = require('child_process');
+const { readInfra } = require('./infra');
+const Printer = require('./printer');
 const fs = require('fs');
-const shell = require("shelljs");
+const dotenv = require('dotenv');
 
-function convertYargsOptionsToOclifFlags(options) {
-  const flagsResult = Object.keys(options).reduce((result, name) => {
-    const opt = options[name];
-    const flag = {
-      description: opt.describe,
-      default: opt.default,
-      hidden: opt.hidden,
-    };
-
-    if (typeof opt.default !== "undefined") {
-      flag.default = opt.default;
-
-      if (opt.type === "boolean") {
-        if (flag.default === true) {
-          flag.allowNo = true;
-        }
-      }
-    }
-
-    if (opt.alias) {
-      flag.char = opt.alias;
-    }
-
-    if (opt.requiresArg) {
-      flag.required = opt.requiresArg;
-    }
-
-    result[name] = flags[opt.type](flag);
-    return result;
-  }, {});
-  return flagsResult;
+function getPulumiStack() {
+  let pulumiOut = runPulumiCommand(['stack', 'ls'], false);
+  let result = /^(.*?)\* /m.exec(pulumiOut);
+  return result ? result[1] : null;
 }
 
-function normalizeFlags(flags) {
-  const result = Object.keys(flags).reduce((current, name) => {
-    if (name.includes("-")) {
-      const normalizedName = camelCase(name);
-      current[normalizedName] = flags[name];
+/**
+ * Add environment variable to process.env
+ *
+ * @param {{}} twilioClient Initialized Twilio Client
+ * @param {*?} shouldGetEnvsFromFile Whether to search and load env file for the current stack  
+ * @return {{}} Environment key-value pairs
+ */
+function getEnvironmentVariables(twilioClient, shouldGetEnvFromFile) {
+
+  let envVars = process.env;
+
+  //remove recursion
+  if(shouldGetEnvFromFile) {
+
+    let environment = getPulumiStack();
+
+    if(environment){
+
+      const envFilePath = `${process.cwd()}/.env.${environment}`;
+
+      if (fs.existsSync(envFilePath)) {
+
+          const env = dotenv.config({ path: envFilePath });
+
+          envVars = {
+            ...envVars,
+            ...env.parsed
+          }
+
+      }
     }
-    return current;
-  }, flags);
-  const [, command, ...args] = process.argv;
-  result.$0 = path.basename(command);
-  result._ = args;
+  }
+  
+  if (twilioClient) {
+    envVars.TWILIO_ACCOUNT_SID = twilioClient.accountSid;
+    envVars.TWILIO_USERNAME = twilioClient.username;
+    envVars.TWILIO_PASSWORD = twilioClient.password;
+  }
+
+  return envVars;
+}
+
+/**
+ * Execute Pulumi CLI command
+ *
+ * @param {Array} args Arguments to Pulumi CLI command
+ * @param {boolean=true} interactive Whether to run the command in interactive mode (i.e. gathering input from user)
+ * @param {{}} twilioClient Initialized Twilio client
+ * @return {null | string} Pulumi command output if executed non interactively. Void if execute interactively
+ */
+
+function runPulumiCommand(args, interactive = true, twilioClient) {
+  try {
+
+    const shouldGetEnvFromFile = 
+      !(args[0] === "stack" && args[1] === "ls") &&
+      (args[0] !== "new");
+
+    if (interactive) {
+      Printer.printHeader('Pulumi CLI output');
+      childProcess.execFileSync('pulumi', args, {
+        stdio: 'inherit',
+        env: getEnvironmentVariables(twilioClient, shouldGetEnvFromFile),
+      });
+      Printer.printHeader('End of Pulumi CLI output');
+    } else {
+      const stdout = childProcess.execSync(`pulumi ${args.join(' ')}`, {
+        env: getEnvironmentVariables(twilioClient, shouldGetEnvFromFile),
+      });
+      return stdout.toString();
+    }
+
+  } catch (error) {
+    throw new TwilioCliError(
+      '\n\nError running Pulumi CLI command.\n ** ' + error.message
+    );
+  }
+}
+
+/**
+ * Check if there is already a deployment of the current stack under a different
+ * account SID
+ *
+ * @returns {string | undefined} Account Sid of the project the current stack is deployed to
+ */
+function getEnvironmentDeployment() {
+  let result;
+  try {
+    let stack = getPulumiStack();
+    let infras = readInfra();
+    if (stack && Object.keys(infras).length > 0) {
+      Object.keys(infras).forEach(sid => {
+        if (infras[sid].environment === stack) {
+          result = sid;
+        }
+      });
+    }
+  } catch (err) {
+    console.log(err);
+  }
+
   return result;
 }
 
-function createExternalCliOptions(flags, twilioClient) {
-  const profile = flags.profile;
-
-  return {
-    username: twilioClient.username,
-    password: twilioClient.password,
-    accountSid: twilioClient.accountSid,
-    profile,
-    logLevel: undefined,
-    outputFormat: undefined,
-  };
-}
-
-function getRegionAndEdge(flags, clientCommand) {
-  const edge =
-    flags.edge || process.env.TWILIO_EDGE || clientCommand.userConfig.edge;
-  const region = flags.region || clientCommand.currentProfile.region;
-
-  return { edge, region };
-}
-
-function getEnvironmentVariables(flags, clientCommand, stack) {
-
-  const accountSid = flags.accountSid || clientCommand.accountSid
-  const authToken = flags.authToken
-  const username = clientCommand.username;
-  const password = clientCommand.password;
-
-  let envFileVars = ""; 
-
-  if (fs.existsSync(`.${stack}.env`)) {
-    envFileVars = `export $(cat .${stack}.env | xargs) && `;
-  }
-
-  return `${envFileVars} TWILIO_ACCOUNT_SID=${accountSid} TWILIO_AUTH_TOKEN=${authToken} TWILIO_USERNAME=${username} TWILIO_PASSWORD=${password}`;
-}
-
-function normalizeArgs(args) {
-  return Object.keys(args).reduce((pr, cur) => {
-
-    if(args[cur]) {
-
-      return {
-        ...pr,
-        [cur]: args[cur].replace(`--${cur}=`, "")
-      } 
-
-    }
-
-    return pr;
-    
-  }, {});
-}
-
-function getStackName(flags, clientCommand) {
-
-  const accountSid = flags.accountSid || clientCommand.accountSid;
-
-  let infraFile = {};
-
-  if (fs.existsSync('twilio-infra.json')) {
-
-    infraFile = JSON.parse(fs.readFileSync('twilio-infra.json', 'utf8'));
-
-  }
-
-  return flags.stack || infraFile[accountSid];
-
-}
-
-function setStack(flags, args, clientCommand) {
-
-  const stackName = getStackName(flags, clientCommand)
-
-  if(stackName) {
-    shell.exec(`pulumi stack init ${stackName}`, { silent: true });
-  }
-
-  return stackName
-
-}
-
-function runPulumiCommand(parseInputs, twilioClient, command, commandFlags) {
-
-  let { flags, args } = parseInputs;
-
-  flags = normalizeFlags(flags);
-
-  const stackName = setStack(flags, args, twilioClient);
-  const vars = getEnvironmentVariables(flags, twilioClient, stackName);
-
-  shell.exec(`${vars} ${command} --stack=${stackName} ${commandFlags || ""}`).stdout;
-
-}
-
-const options = { 
-  'stack': {
-    alias: 's',
-    describe: 'The stack to use for resources state',
-    type: 'string',
-  },
-};
-
 module.exports = {
-  convertYargsOptionsToOclifFlags,
-  normalizeFlags,
-  createExternalCliOptions,
-  getRegionAndEdge,
-  getEnvironmentVariables,
-  normalizeArgs,
-  setStack,
   runPulumiCommand,
-  getStackName,
-  options
+  Printer,
+  getPulumiStack,
+  getEnvironmentDeployment,
 };

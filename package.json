@@ -1,23 +1,34 @@
 {
   "name": "plugin-twilio-infra",
   "description": "Develop and deploy your Twilio infrastructure using code",
-  "version": "0.0.1",
+  "version": "0.4.1",
   "author": "Kaique Lupo Leite <klupo@twilio.com>",
-  "bugs": "https://github.com/kaiquelupo/plugin-twilio-infra/issues",
+  "contributors": [
+    {
+      "name": "Giuseppe Verni",
+      "email": "gverni@twilio.com"
+    },
+    {
+      "name": "Maria Bermudez",
+      "email": "mbermudez@twilio.com"
+    }
+  ],
+  "bugs": "https://github.com/twilio-infra-as-code/plugin-twilio-infra/issues",
   "dependencies": {
     "@oclif/command": "^1.5.19",
     "@oclif/config": "^1.13.3",
-    "@twilio/cli-core": "^4.3.3",
-    "lodash.camelcase": "^4.3.0",
-    "lodash.kebabcase": "^4.1.1",
-    "shelljs": "^0.8.4",
-    "valid-url": "^1.0.9"
+    "@twilio/cli-core": "^6.4.0",
+    "chalk": "^4.1.0",
+    "dotenv": "^10.0.0",
+    "inquirer": "^8.0.0",
+    "ora": "^5.3.0",
+    "shelljs": "^0.8.4"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.2",
     "@oclif/plugin-help": "^2.2.1",
     "@oclif/test": "^1.2.5",
-    "@twilio/cli-test": "^2.0.2",
+    "@twilio/cli-test": "^2.1.2",
     "all-contributors-cli": "^6.7.0",
     "chai": "^4.2.0",
     "eslint": "^4.19.1",
@@ -36,7 +47,7 @@
     "LICENSE",
     "README.md"
   ],
-  "homepage": "https://github.com/kaiquelupo/plugin-twilio-infra",
+  "homepage": "https://github.com/twilio-infra-as-code/plugin-twilio-infra",
   "keywords": [
     "oclif-plugin",
     "twilio-cli-plugin",
@@ -55,29 +66,37 @@
       "infra": {
         "description": "Locally develop, debug and deploy infrastructure to Twilio project describing it as code"
       },
+      "infra:new": {
+        "description": "Creates a new project based on a template"
+      },
       "infra:deploy": {
         "description": "Deploys and updates resources described in this directory to a Twilio project"
       },
       "infra:preview": {
         "description": "Previews changes related to resources described in this directory and mapped to a Twilio project"
       },
-      "infra:watch": {
-        "description": "Continuously update resources described in this directory in a Twilio project"
+      "infra:destroy": {
+        "description": "Destroy an existing stack and the deployed resources"
       },
-      "infra:new": {
-        "description": "Creates a new project based on a template"
+      "infra:environment:new": {
+        "description": "Create a new environment for the current Twilio project"
+      },
+      "infra:environment:get": {
+        "description": "Get the deployment environment set for the current project"
+      },
+      "infra:environment:set": {
+        "description": "Set the deployment environment for the current project"
       }
     }
   },
   "publishConfig": {
     "access": "public"
   },
-  "repository": "kaiquelupo/plugin-twilio-infra",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/twilio-infra-as-code/plugin-twilio-infra"
+  },
   "scripts": {
-    "postpack": "rm -f oclif.manifest.json",
-    "posttest": "eslint --ignore-path .gitignore . && npm audit",
-    "prepack": "oclif-dev manifest && oclif-dev readme",
-    "test": "nyc --check-coverage --lines 90 --reporter=html --reporter=text mocha --forbid-only \"test/**/*.test.js\"",
-    "version": "oclif-dev readme && git add README.md"
+    "linter:fix": "eslint --ignore-path .gitignore . --fix"
   }
 }

@@ -41,7 +41,7 @@ $ brew tap twilio/brew && brew install twilio
 To get started, run `npm install` to install the plugin package dependencies. Afterwards, run the following command:
 
 ```sh-session
-$ twilio plugins:install kaiquelupo/plugin-twilio-infra
+$ twilio plugins:install plugin-twilio-infra
 ```
 
 You can now start using the `twilio infra` commands on your machine.
@@ -58,13 +58,27 @@ USAGE
 ## Commands
 
 <!-- commands -->
-* twilio infra:new
-* twilio infra:deploy
-* twilio infra:preview
-* twilio infra:watch
-* twilio infra:stack:new
+* `twilio infra:new`: Creates a new project using Pulumi provider
+* `twilio infra:deploy`: Deploys and updates resources described in this directory to a Twilio project. Additional environment variables can be defined using `.env` files
+* `twilio infra:preview`: Previews changes without deploying them to your Twilio project
+* `twilio infra:destroy`: Destroy deployed resources associated to a specific environment
+* `twilio infra:environment:new`: Create a new environment for the current Twilio project
+* `twilio infra:environment:set`: Get the deployment environment set for the current project
+* `twilio infra:environment:get`: Set the deployment environment for the current project
 
 To see the usage details and options for each subcommand, run `twilio infra:<subcommand> --help`.
+
+## Environment variables
+
+Environment variables used by the `infra` commands can be stored in a `.env` file. Each _deployment environment_ can have its own file. The `env` file needs to be placed in the directory where the infra command is executed and needs to use the following naming convention:
+```
+.env.<environment name>
+```
+For example, if your environment is called `dev` the file needs to be called: 
+```
+.env.dev
+```
+`.env` file without suffix will not be loaded automatically by the CLI plugin. 
 
 ## Contributing
 
@@ -74,10 +88,10 @@ This project welcomes contributions from the community. Please see the [`CONTRIB
 
 Please be aware that this project has a [Code of Conduct](https://github.com/twilio-labs/.github/blob/master/CODE_OF_CONDUCT.md). The tldr; is to just be excellent to each other ❤️
 
+## Acknowledgment and thanks
+
+This plugin is based on the [Twilio CLI Serverless Plugin](https://github.com/twilio-labs/plugin-serverless) repository. A big thank you to everyone involved in that project! **#WeBuild**
+
 ## License
 
 MIT
-
-### Twilio CLI Serverless Plugin
-
-This plugin uses the [Twilio CLI Serverless Plugin](https://github.com/twilio-labs/plugin-serverless) as its base repository. A big thank you to everyone involved in this project! **#WeBuild**
